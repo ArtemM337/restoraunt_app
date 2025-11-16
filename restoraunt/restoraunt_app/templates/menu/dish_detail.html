@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}{{ dish.name }} - Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dish-detail {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-top: 2rem;
+    }
+    
+    .dish-detail-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .dish-image-large {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        background: #e9ecef;
+    }
+    
+    .dish-info {
+        padding: 2rem;
+    }
+    
+    .dish-category-badge {
+        display: inline-block;
+        background: #f1faee;
+        color: #457b9d;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .dish-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    
+    .dish-price-large {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #e63946;
+        margin-bottom: 1.5rem;
+    }
+    
+    .dish-section {
+        margin-bottom: 2rem;
+    }
+    
+    .dish-section h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+    
+    .dish-section p {
+        color: #666;
+        line-height: 1.8;
+    }
+    
+    .add-to-cart-form {
+        margin-top: 2rem;
+    }
+    
+    .availability-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .available {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .unavailable {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    @media (max-width: 768px) {
+        .dish-detail-content {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dish-detail">
+        <div class="dish-detail-content">
+            <div>
+                {% if dish.image %}
+                <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image-large">
+                {% else %}
+                <div class="dish-image-large"></div>
+                {% endif %}
+            </div>
+            
+            <div class="dish-info">
+                <span class="dish-category-badge">{{ dish.category.name }}</span>
+                <h1 class="dish-title">{{ dish.name }}</h1>
+                
+                {% if dish.is_available %}
+                <span class="availability-status available">✓ Available</span>
+                {% else %}
+                <span class="availability-status unavailable">✗ Currently Unavailable</span>
+                {% endif %}
+                
+                <div class="dish-price-large">${{ dish.price }}</div>
+                
+                <div class="dish-section">
+                    <h3>Description</h3>
+                    <p>{{ dish.description }}</p>
+                </div>
+                
+                <div class="dish-section">
+                    <h3>Ingredients</h3>
+                    <p>{{ dish.ingredients }}</p>
+                </div>
+                
+                {% if dish.is_available %}
+                <form method="post" action="{% url 'add_to_cart' dish.id %}" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.125rem;">
+                        🛒 Add to Cart
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Order Success - Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        max-width: 600px;
+        margin: 4rem auto;
+        text-align: center;
+        background: white;
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .success-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .success-title {
+        font-size: 2rem;
+        color: #28a745;
+        margin-bottom: 1rem;
+    }
+    
+    .success-message {
+        color: #666;
+        font-size: 1.125rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+    
+    .success-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-container">
+        <div class="success-icon">✓</div>
+        <h1 class="success-title">Order Placed Successfully!</h1>
+        <p class="success-message">
+            Thank you for your order! We've received your order and will start preparing it right away. 
+            You'll receive a confirmation call shortly.
+        </p>
+        <div class="success-actions">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+            <a href="{% url 'menu' %}" class="btn btn-primary">Order Again</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

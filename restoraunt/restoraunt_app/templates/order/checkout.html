@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        text-align: center;
+        padding: 3rem 0;
+        background: white;
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+    
+    .checkout-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #e63946;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .form-actions .btn {
+        flex: 1;
+    }
+    
+    .required {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Checkout</h1>
+    <p>Complete your order</p>
+</div>
+
+<div class="container">
+    <div class="checkout-container">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">
+                    Delivery Address <span class="required">*</span>
+                </label>
+                {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="error">{{ form.address.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.phone.id_for_label }}">
+                    Phone Number <span class="required">*</span>
+                </label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                    <div class="error">{{ form.phone.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.payment_method.id_for_label }}">
+                    Payment Method <span class="required">*</span>
+                </label>
+                {{ form.payment_method }}
+                {% if form.payment_method.errors %}
+                    <div class="error">{{ form.payment_method.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <a href="{% url 'cart' %}" class="btn btn-secondary">Back to Cart</a>
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

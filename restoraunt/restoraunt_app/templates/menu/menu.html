@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Menu - Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        text-align: center;
+        padding: 3rem 0;
+        background: white;
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+    
+    .dish-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    
+    .dish-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    
+    .dish-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+    
+    .dish-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: #e9ecef;
+    }
+    
+    .dish-content {
+        padding: 1.5rem;
+    }
+    
+    .dish-category {
+        display: inline-block;
+        background: #f1faee;
+        color: #457b9d;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dish-name {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dish-description {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .dish-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .dish-price {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #e63946;
+    }
+    
+    .availability-badge {
+        background: #28a745;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+    
+    .unavailable {
+        opacity: 0.6;
+    }
+    
+    .unavailable .availability-badge {
+        background: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Our Menu</h1>
+    <p>Explore our delicious selection</p>
+</div>
+
+<div class="container">
+    <div class="dish-grid">
+        {% for dish in dishes %}
+        <a href="{% url 'dish_detail' dish.id %}" class="dish-card {% if not dish.is_available %}unavailable{% endif %}">
+            {% if dish.image %}
+            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image">
+            {% else %}
+            <div class="dish-image"></div>
+            {% endif %}
+            <div class="dish-content">
+                <span class="dish-category">{{ dish.category.name }}</span>
+                <h3 class="dish-name">{{ dish.name }}</h3>
+                <p class="dish-description">{{ dish.description }}</p>
+                <div class="dish-footer">
+                    <span class="dish-price">${{ dish.price }}</span>
+                    {% if dish.is_available %}
+                    <span class="availability-badge">Available</span>
+                    {% else %}
+                    <span class="availability-badge">Unavailable</span>
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p>No dishes available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
