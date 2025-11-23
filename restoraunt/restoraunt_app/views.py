@@ -4,6 +4,13 @@ from django.views import View
 from django.urls import reverse_lazy
 from .models import Dish, Review, Order, OrderItem
 from .forms import OrderForm, ReviewForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
+from django.views import View
+
+from .forms import RegisterForm, LoginForm
+
 
 
 # -----------------------------
@@ -112,3 +119,24 @@ class CheckoutView(CreateView):
 
 def order_success(request):
     return render(request, "order/success.html")
+
+
+class RegisterView(View):
+    template_name = "auth/register.html"
+
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("home")
+        return render(request, self.template_name, {"form": form})
+
+
+class CustomLoginView(LoginView):
+    template_name = "auth/login.html"
+    authentication_form = LoginForm

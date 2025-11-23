@@ -1,6 +1,8 @@
 from django import forms
 from .models import Order, Review
-
+from django import forms
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -16,3 +18,16 @@ class ReviewForm(forms.ModelForm):
             "rating": forms.NumberInput(attrs={"min": 1, "max": 5}),
             "text": forms.Textarea(attrs={"rows": 3}),
         }
+
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Username"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))

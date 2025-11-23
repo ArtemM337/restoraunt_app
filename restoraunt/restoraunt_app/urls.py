@@ -4,6 +4,9 @@ from .views import (
     CartView, AddToCartView, RemoveFromCartView,
     CheckoutView, order_success
 )
+from .views import RegisterView, CustomLoginView
+from django.contrib.auth.views import LogoutView
+
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
@@ -17,4 +20,9 @@ urlpatterns = [
 
     path("checkout/", CheckoutView.as_view(), name="checkout"),
     path("checkout/success/", order_success, name="order_success"),
+
+    path("register/", RegisterView.as_view(), name="register"),
+    path("login/", CustomLoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
+
 ]

@@ -123,6 +123,12 @@
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'menu' %}">Menu</a></li>
                 <li><a href="{% url 'cart' %}">Cart <span class="cart-badge">{{ request.session.cart|length|default:0 }}</span></a></li>
+                {% if user.is_authenticated %}
+                <li><a href="#">{{ user.username }}</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
