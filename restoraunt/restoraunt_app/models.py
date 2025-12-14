@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 
 
@@ -61,6 +62,8 @@ class Order(models.Model):
     phone = models.CharField(max_length=20)
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return f"Order #{self.id}"
@@ -82,3 +85,5 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.dish.name} - {self.rating}★"
+
+

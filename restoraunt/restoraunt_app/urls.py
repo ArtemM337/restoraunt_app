@@ -2,8 +2,11 @@ from django.urls import path
 from .views import (
     HomeView, MenuView, DishDetailView,
     CartView, AddToCartView, RemoveFromCartView,
-    CheckoutView, order_success
+    CheckoutView, order_success,
+    RegisterView, CustomLoginView,
+    OrderHistoryView, MenuByCategoryView, search_dishes
 )
+
 from .views import RegisterView, CustomLoginView
 from django.contrib.auth.views import LogoutView
 
@@ -24,5 +27,9 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", CustomLoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
+    path("orders/", OrderHistoryView.as_view(), name="order_history"),
+    path("menu/search/", search_dishes, name="search_dishes"),
+    path("menu/category/<int:category_id>/", MenuByCategoryView.as_view(), name="menu_by_category"),
+
 
 ]

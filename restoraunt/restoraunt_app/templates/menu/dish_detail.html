@@ -90,6 +90,53 @@
         color: #721c24;
     }
     
+    /* Added reviews section styles */
+    .reviews-section {
+        margin-top: 3rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .reviews-title {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+    
+    .review-card {
+        border-bottom: 1px solid #eee;
+        padding: 1.5rem 0;
+    }
+    
+    .review-card:last-child {
+        border-bottom: none;
+    }
+    
+    .review-rating {
+        color: #f39c12;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .review-text {
+        color: #666;
+        line-height: 1.6;
+    }
+    
+    .review-date {
+        color: #999;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .no-reviews {
+        color: #999;
+        text-align: center;
+        padding: 2rem;
+    }
+    
     @media (max-width: 768px) {
         .dish-detail-content {
             grid-template-columns: 1fr;
@@ -142,6 +189,27 @@
                 {% endif %}
             </div>
         </div>
+    </div>
+    
+    <!-- Added reviews section -->
+    <div class="reviews-section">
+        <h2 class="reviews-title">Customer Reviews</h2>
+        
+        {% if dish.reviews.all %}
+            {% for review in dish.reviews.all %}
+            <div class="review-card">
+                <div class="review-rating">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+                <p class="review-text">{{ review.text }}</p>
+                <p class="review-date">{{ review.created_at|date:"F d, Y" }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-reviews">No reviews yet. Be the first to review this dish!</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

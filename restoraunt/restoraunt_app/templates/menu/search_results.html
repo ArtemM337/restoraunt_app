@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Menu - Restaurant{% endblock %}
+{% block title %}Search Results - Restaurant{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -16,27 +16,9 @@
         color: #333;
     }
     
-    .search-container {
-        max-width: 600px;
-        margin: 2rem auto;
-    }
-    
-    .search-form {
-        display: flex;
-        gap: 1rem;
-    }
-    
-    .search-input {
-        flex: 1;
-        padding: 0.75rem 1rem;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 1rem;
-    }
-    
-    .search-input:focus {
-        outline: none;
-        border-color: #e63946;
+    .search-info {
+        color: #666;
+        margin-top: 1rem;
     }
     
     .dish-grid {
@@ -72,17 +54,6 @@
         padding: 1.5rem;
     }
     
-    .dish-category {
-        display: inline-block;
-        background: #f1faee;
-        color: #457b9d;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-    
     .dish-name {
         font-size: 1.25rem;
         font-weight: bold;
@@ -111,63 +82,47 @@
         color: #e63946;
     }
     
-    .availability-badge {
-        background: #28a745;
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-    }
-    
-    .unavailable {
-        opacity: 0.6;
-    }
-    
-    .unavailable .availability-badge {
-        background: #dc3545;
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1>Our Menu</h1>
-    <p>Explore our delicious selection</p>
-    
-    <div class="search-container">
-        <form method="get" class="search-form">
-            {{ search_form.query }}
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-    </div>
+    <h1>Search Results</h1>
+    {% if query %}
+    <p class="search-info">Showing results for "{{ query }}"</p>
+    {% endif %}
 </div>
 
 <div class="container">
+    {% if dishes %}
     <div class="dish-grid">
         {% for dish in dishes %}
-        <a href="{% url 'dish_detail' dish.id %}" class="dish-card {% if not dish.is_available %}unavailable{% endif %}">
+        <a href="{% url 'dish_detail' dish.id %}" class="dish-card">
             {% if dish.image %}
             <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image">
             {% else %}
             <div class="dish-image"></div>
             {% endif %}
             <div class="dish-content">
-                <span class="dish-category">{{ dish.category.name }}</span>
                 <h3 class="dish-name">{{ dish.name }}</h3>
                 <p class="dish-description">{{ dish.description }}</p>
                 <div class="dish-footer">
                     <span class="dish-price">${{ dish.price }}</span>
-                    {% if dish.is_available %}
-                    <span class="availability-badge">Available</span>
-                    {% else %}
-                    <span class="availability-badge">Unavailable</span>
-                    {% endif %}
                 </div>
             </div>
         </a>
-        {% empty %}
-        <p>No dishes available at the moment.</p>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="no-results">
+        <p>No dishes found matching your search.</p>
+        <a href="{% url 'menu' %}" class="btn btn-primary" style="margin-top: 1rem;">View All Dishes</a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

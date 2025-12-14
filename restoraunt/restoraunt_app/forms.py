@@ -31,3 +31,10 @@ class RegisterForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Username"}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(required=False, label="", 
+                            widget=forms.TextInput(attrs={
+                                "placeholder": "Search dishes..."
+                            }))

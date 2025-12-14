@@ -10,12 +10,24 @@ from django.contrib.auth.views import LoginView
 from django.views import View
 
 from .forms import RegisterForm, LoginForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import RegisterForm, LoginForm, OrderForm, ReviewForm, SearchForm
 
 
 
-# -----------------------------
-# HOME
-# -----------------------------
+
+
+
+
+class OrderHistoryView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = "order/history.html"
+    context_object_name = "orders"
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by("-created_at")
+
+
 class HomeView(ListView):
     model = Dish
     template_name = "home.html"
@@ -25,13 +37,26 @@ class HomeView(ListView):
         return Dish.objects.filter(is_available=True).order_by("-created_at")[:8]
 
 
-# -----------------------------
-# MENU
-# -----------------------------
+
 class MenuView(ListView):
     model = Dish
     template_name = "menu/menu.html"
     context_object_name = "dishes"
+
+    def get_queryset(self):
+        queryset = Dish.objects.all()
+
+        query = self.request.GET.get("query", "")
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = SearchForm(self.request.GET or None)
+        return context
+
 
 
 class DishDetailView(DetailView):
@@ -40,9 +65,7 @@ class DishDetailView(DetailView):
     context_object_name = "dish"
 
 
-# -----------------------------
-# SESSION CART
-# -----------------------------
+
 def get_cart(session):
     return session.get("cart", {})
 
@@ -84,14 +107,13 @@ class RemoveFromCartView(View):
         return redirect("cart")
 
 
-# -----------------------------
-# CHECKOUT
-# -----------------------------
+
 class CheckoutView(CreateView):
     model = Order
     form_class = OrderForm
     template_name = "order/checkout.html"
     success_url = reverse_lazy("order_success")
+    
 
     def form_valid(self, form):
         cart = get_cart(self.request.session)
@@ -112,6 +134,7 @@ class CheckoutView(CreateView):
                 quantity=quantity,
                 price_at_time=dish.price
             )
+        order.user = self.request.user if self.request.user.is_authenticated else None
 
         save_cart(self.request.session, {})
         return super().form_valid(form)
@@ -140,3 +163,21 @@ class RegisterView(View):
 class CustomLoginView(LoginView):
     template_name = "auth/login.html"
     authentication_form = LoginForm
+
+def search_dishes(request):
+    query = request.GET.get("q", "")
+    dishes = Dish.objects.filter(name__icontains=query)
+
+    return render(request, "menu/search_results.html", {
+        "query": query,
+        "dishes": dishes
+    })
+
+
+class MenuByCategoryView(ListView):
+    template_name = "menu/menu_category.html"
+    context_object_name = "dishes"
+
+    def get_queryset(self):
+        category_id = self.kwargs["category_id"]
+        return Dish.objects.filter(category_id=category_id)
