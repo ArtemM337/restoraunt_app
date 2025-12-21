@@ -181,3 +181,36 @@ class MenuByCategoryView(ListView):
     def get_queryset(self):
         category_id = self.kwargs["category_id"]
         return Dish.objects.filter(category_id=category_id)
+
+
+
+class RepeatOrderView(LoginRequiredMixin, View):
+    def post(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id, user=request.user)
+        cart = {}
+
+        for item in order.items.all():
+            cart[str(item.dish.id)] = item.quantity
+
+        request.session["cart"] = cart
+        return redirect("cart")
+
+
+class AddReviewView(LoginRequiredMixin, CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = "reviews/add_review.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["dish"] = Dish.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.dish = Dish.objects.get(pk=self.kwargs["pk"])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("dish_detail", kwargs={"pk": self.object.dish.id})
+

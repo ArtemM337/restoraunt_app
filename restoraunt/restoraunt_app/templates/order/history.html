@@ -103,6 +103,11 @@
         font-weight: 600;
     }
     
+    /* Added repeat order button styles */
+    .repeat-order-form {
+        margin-top: 1rem;
+    }
+    
     .no-orders {
         text-align: center;
         padding: 3rem;
@@ -156,6 +161,14 @@
                     <span>{{ order.get_payment_method_display }}</span>
                 </div>
             </div>
+            
+            <!-- Added repeat order button -->
+            <form method="post" action="{% url 'repeat_order' order.id %}" class="repeat-order-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary" style="width: 100%;">
+                    🔄 Repeat This Order
+                </button>
+            </form>
         </div>
         {% endfor %}
     </div>
@@ -167,3 +180,4 @@
     {% endif %}
 </div>
 {% endblock %}
+

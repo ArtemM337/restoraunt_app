@@ -77,13 +77,22 @@ class OrderItem(models.Model):
 
 
 class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE, related_name="reviews")
     rating = models.PositiveIntegerField()
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=True)
 
+
     def __str__(self):
         return f"{self.dish.name} - {self.rating}★"
 
+user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="reviews",
+    null=True,       # ← ДОДАТИ
+    blank=True       # ← ДОДАТИ
+)
 

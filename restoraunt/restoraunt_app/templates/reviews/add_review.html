@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Add Review - Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        text-align: center;
+        padding: 3rem 0;
+        background: white;
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+    
+    .review-form {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #e63946;
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+    
+    .rating-input {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .rating-input label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #ddd;
+        transition: color 0.2s;
+    }
+    
+    .rating-input input[type="radio"] {
+        display: none;
+    }
+    
+    .rating-input input[type="radio"]:checked ~ label,
+    .rating-input label:hover,
+    .rating-input label:hover ~ label {
+        color: #f39c12;
+    }
+    
+    .error {
+        color: #e63946;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Write a Review</h1>
+    <p>Share your experience with this dish</p>
+</div>
+
+<div class="container">
+    <form method="post" class="review-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Rating</label>
+            <div class="rating-input">
+                {% for i in "54321" %}
+                <input type="radio" name="rating" value="{{ i }}" id="rating{{ i }}" {% if form.rating.value == i %}checked{% endif %} required>
+                <label for="rating{{ i }}">★</label>
+                {% endfor %}
+            </div>
+            {% if form.rating.errors %}
+                <div class="error">{{ form.rating.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_text" class="form-label">Your Review</label>
+            <textarea name="text" id="id_text" class="form-control" placeholder="Tell us about your experience...">{{ form.text.value|default:'' }}</textarea>
+            {% if form.text.errors %}
+                <div class="error">{{ form.text.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        {% if form.non_field_errors %}
+        <div class="error" style="margin-bottom: 1rem;">
+            {{ form.non_field_errors.0 }}
+        </div>
+        {% endif %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Review</button>
+            <a href="{% url 'dish_detail' dish.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@ from .views import (
     CartView, AddToCartView, RemoveFromCartView,
     CheckoutView, order_success,
     RegisterView, CustomLoginView,
-    OrderHistoryView, MenuByCategoryView, search_dishes
+    OrderHistoryView, MenuByCategoryView, search_dishes, RepeatOrderView, AddReviewView
 )
 
 from .views import RegisterView, CustomLoginView
@@ -30,6 +30,7 @@ urlpatterns = [
     path("orders/", OrderHistoryView.as_view(), name="order_history"),
     path("menu/search/", search_dishes, name="search_dishes"),
     path("menu/category/<int:category_id>/", MenuByCategoryView.as_view(), name="menu_by_category"),
-
+    path("orders/repeat/<int:order_id>/", RepeatOrderView.as_view(), name="repeat_order"),
+    path("dish/<int:pk>/review/", AddReviewView.as_view(), name="add_review"),
 
 ]
